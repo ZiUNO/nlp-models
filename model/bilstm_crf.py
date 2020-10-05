@@ -11,17 +11,6 @@ from multiprocessing.dummy import Pool as ThreadPool
 from model import *
 
 
-def _argmax(vec):
-    _, idx = torch.max(vec, 1)
-    return idx.item()
-
-
-def _log_sum_exp(vec):
-    max_score = vec[0, _argmax(vec)]
-    max_score_broadcast = max_score.view(1, -1).expand(1, vec.size()[1])
-    return max_score + torch.log(torch.sum(torch.exp(vec - max_score_broadcast)))
-
-
 class BiLSTM_CRF(nn.Module):
     def __init__(self, vocab_size, tagset_size, embedding_dim, hidden_dim):
         super(BiLSTM_CRF, self).__init__()
@@ -45,87 +34,72 @@ class BiLSTM_CRF(nn.Module):
         self.transitions.data[:, -1] = - MAX_INT
 
     def _forward_alg(self, feats):
-        init_alphas = torch.full((self.batch_size, self.tagset_size), -1.0 * MAX_INT).cuda()
+        init_alphas = torch.full((self.batch_size, self.tagset_size), -1. * MAX_INT).cuda()
         # init_alphas[0][index of START_TAG] = 0
-        init_alphas[:, -2] = 0
+        init_alphas[:, -2] = 0.
 
         forward_var = init_alphas
+        for i in range(self.seq_length):
+            feat = feats[:, i]
+            alphas_t = []
+            for next_tag in range(self.tagset_size):
+                emit_scores = feat[:, next_tag].view(self.batch_size, -1).expand(self.batch_size, self.tagset_size)
+                trans_scores = self.transitions[next_tag].expand(self.batch_size, self.tagset_size)
+                next_tag_var = forward_var + trans_scores + emit_scores
+                alphas_t.append(torch.logsumexp(next_tag_var, dim=1).view(self.batch_size, 1))
+            forward_var = torch.cat(alphas_t).view(self.batch_size, -1)
 
-        def f(i):
-            for feat in feats[i]:
-                alphas_t = []
-                for next_tag in range(self.tagset_size):
-                    emit_score = feat[next_tag].view(1, -1).expand(1, self.tagset_size)
-                    trans_score = self.transitions[next_tag].view(1, -1)
-                    next_tag_var = forward_var[i:i + 1] + trans_score + emit_score
-                    alphas_t.append(_log_sum_exp(next_tag_var).view(1))
-                forward_var[i] = torch.cat(alphas_t).view(1, -1)[0]
-
-        pool = ThreadPool(self.batch_size)
-        pool.map(f, range(self.batch_size))
-        pool.close()
-        pool.join()
-
-        terminal_var = torch.full((self.batch_size, self.tagset_size), -1.0 * MAX_INT).cuda()
-        for i in range(self.batch_size):
-            terminal_var[i] = forward_var[i] + self.transitions[-1]
-        alphas = torch.zeros(self.batch_size, dtype=torch.float)
-        for i in range(self.batch_size):
-            alphas[i] = _log_sum_exp(terminal_var[i:i + 1])
-        return alphas.mean()
+        terminal_var = forward_var + self.transitions[-1].expand(self.batch_size, self.tagset_size)
+        alphas = torch.logsumexp(terminal_var, dim=1)
+        return alphas.sum()
 
     def _score_sentence(self, feats, tags):
-        score = torch.zeros(self.batch_size)
-        tags = torch.cat([torch.ones((self.batch_size, 1), dtype=torch.long) * (self.tagset_size - 2), tags], dim=1)
-
-        def f(i):
-            for j, feat in enumerate(feats[i]):
-                score[i] = score[i] + self.transitions[tags[i][j + 1], tags[i][j]] + feat[tags[i][j + 1]]
-            score[i] = score[i] + self.transitions[-1, tags[i][-1]]
-
-        pool = ThreadPool(self.batch_size)
-        pool.map(f, range(self.batch_size))
-        pool.close()
-        pool.join()
-        return score.mean()
+        score = torch.zeros(self.batch_size).cuda()
+        tags = torch.cat([torch.ones((self.batch_size, 1), dtype=torch.long).cuda() * (self.tagset_size - 2), tags],
+                         dim=1)
+        for j in range(self.seq_length):
+            score = score + self.transitions[tags[:, j + 1], tags[:, j]].view(self.batch_size) + torch.diagonal(feats[:, j][:, tags[:, j + 1]])
+        score = score + self.transitions[-1, tags[:, -1]]
+        return score.sum()
 
     def _viterbi_decode(self, feats):
-        path_scores = []
-        best_paths = []
-
-        init_vvars = torch.full((self.batch_size, self.tagset_size), -1.0 * MAX_INT).cuda()
-        terminal_var = torch.full((self.batch_size, self.tagset_size), -1.0 * MAX_INT).cuda()
-        init_vvars[:, -2] = 0
+        init_vvars = torch.full((self.batch_size, self.tagset_size), -1. * MAX_INT).cuda()
+        init_vvars[:, -2] = 0.
 
         forward_var = init_vvars
-        for i in range(self.batch_size):
-            backpointers = []
-            for feat in feats[i]:
-                bptrs_t = []
-                viterbivars_t = []
 
-                for next_tag in range(self.tagset_size):
-                    next_tag_var = forward_var[i:i + 1] + self.transitions[next_tag]
-                    best_tag_id = _argmax(next_tag_var)
-                    bptrs_t.append(best_tag_id)
-                    viterbivars_t.append(next_tag_var[0][best_tag_id].view(1))
-                forward_var[i] = (torch.cat(viterbivars_t) + feat).view(1, -1)
-                backpointers.append(bptrs_t)
-            terminal_var[i] = forward_var[i] + self.transitions[-1]
-            best_tag_id = _argmax(terminal_var[i:i + 1])
-
-            path_score = terminal_var[i][best_tag_id]
-
-            best_path = [best_tag_id]
-            for bptrs_t in reversed(backpointers):
-                best_tag_id = bptrs_t[best_tag_id]
-                best_path.append(best_tag_id)
-            start = best_path.pop()
-            assert start == self.tagset_size - 2
-            best_path.reverse()
-            path_scores.append(path_score)
-            best_paths.append(best_path)
-        return torch.tensor(path_scores, dtype=torch.float).mean(), best_paths
+        backpointers = []
+        for i in range(self.seq_length):
+            bptrs_t = []
+            viterbivars_t = []
+            for next_tag in range(self.tagset_size):
+                next_tag_var = forward_var.view(self.batch_size, self.tagset_size) + self.transitions[next_tag].expand(
+                    self.batch_size, self.tagset_size)
+                best_tag_id = torch.argmax(next_tag_var, dim=1)
+                bptrs_t.append(best_tag_id)
+                viterbivars_t.append(torch.diagonal(next_tag_var[:, best_tag_id]))
+            forward_var = (torch.cat(viterbivars_t).view(self.tagset_size, self.batch_size).transpose(0, 1) + feats[:,
+                                                                                                              i]).view(
+                self.batch_size, self.tagset_size)
+            backpointers.append(bptrs_t)
+        terminal_var = forward_var + self.transitions[-1].expand(self.batch_size, self.tagset_size)
+        best_tag_id = torch.argmax(terminal_var, dim=1)
+        path_scores = torch.diagonal(terminal_var[:, best_tag_id])
+        best_paths = [best_tag_id]
+        for bptrs_t in reversed(backpointers):
+            bptrs_t = torch.cat(bptrs_t).view(self.tagset_size, self.batch_size)
+            best_tag_id = torch.diagonal(bptrs_t[best_tag_id])
+            best_paths.append(best_tag_id)
+        best_paths = torch.cat(best_paths).view(self.seq_length + 1, self.batch_size).transpose(0, 1)
+        start = best_paths[:, -1].tolist()
+        best_paths = best_paths[:, :-1]
+        assert start == [self.tagset_size - 2] * self.batch_size
+        best_paths = best_paths.tolist()
+        for i, path in enumerate(best_paths):
+            path.reverse()
+            best_paths[i] = path
+        path_scores = path_scores.tolist()
+        return torch.tensor(path_scores, dtype=torch.float).sum(), best_paths
 
     def forward(self, X, Y=None):
         """
@@ -135,7 +109,7 @@ class BiLSTM_CRF(nn.Module):
         :return:
         """
         # BiLSTM
-        self.seq_length = X.shape[-1]
+        self.seq_length = X.shape[1]
         self.batch_size = X.shape[0]
         hidden = (torch.randn(2, self.seq_length, self.hidden_dim // 2).cuda(),
                   torch.randn(2, self.seq_length, self.hidden_dim // 2).cuda())
