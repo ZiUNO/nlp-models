@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0a2d870c-e875-4f54-9915-c40efb92f337" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-    </list>
+    <list default="true" id="0a2d870c-e875-4f54-9915-c40efb92f337" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +78,7 @@
       <updated>1601814231773</updated>
       <workItem from="1601814234283" duration="26354000" />
       <workItem from="1601950048631" duration="919000" />
-      <workItem from="1601951206335" duration="3793000" />
+      <workItem from="1601951206335" duration="3866000" />
     </task>
     <task id="LOCAL-00001" summary="Add:&#10;BiLSTM+CRF">
       <created>1601814554363</created>
@@ -97,7 +94,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601906068022</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Update README">
+      <created>1601973555222</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1601973555222</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -119,7 +123,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add:&#10;BiLSTM+CRF" />
     <MESSAGE value="Modify:&#10;BiLSTM+CRF: matrix calculation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modify:&#10;BiLSTM+CRF: matrix calculation" />
+    <MESSAGE value="Update README" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update README" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nlp_models$run_bilstm_crf.coverage" NAME="run_bilstm_crf Coverage Results" MODIFIED="1601951484486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
