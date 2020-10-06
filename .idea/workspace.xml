@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0a2d870c-e875-4f54-9915-c40efb92f337" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/bilstm_crf.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/bilstm_crf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_bilstm_crf.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_bilstm_crf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -82,6 +81,7 @@
       <updated>1601814231773</updated>
       <workItem from="1601814234283" duration="26354000" />
       <workItem from="1601950048631" duration="919000" />
+      <workItem from="1601951206335" duration="3793000" />
     </task>
     <task id="LOCAL-00001" summary="Add:&#10;BiLSTM+CRF">
       <created>1601814554363</created>
@@ -122,6 +122,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="Modify:&#10;BiLSTM+CRF: matrix calculation" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/nlp_models$run_bilstm_crf.coverage" NAME="run_bilstm_crf Coverage Results" MODIFIED="1601950960445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/nlp_models$run_bilstm_crf.coverage" NAME="run_bilstm_crf Coverage Results" MODIFIED="1601951484486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
