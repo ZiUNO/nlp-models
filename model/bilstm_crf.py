@@ -7,7 +7,7 @@
 
 import torch
 import torch.nn as nn
-from multiprocessing.dummy import Pool as ThreadPool
+
 from model import *
 
 
