@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0a2d870c-e875-4f54-9915-c40efb92f337" name="Default Changelist" comment="" />
+    <list default="true" id="0a2d870c-e875-4f54-9915-c40efb92f337" name="Default Changelist" comment="BiLSTM_CRF-&gt;BiLSTM+CRF">
+      <change afterPath="$PROJECT_DIR$/model/bilstm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/crf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/bilstm_crf.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/bilstm_crf.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -79,6 +91,7 @@
       <workItem from="1601814234283" duration="26354000" />
       <workItem from="1601950048631" duration="919000" />
       <workItem from="1601951206335" duration="3866000" />
+      <workItem from="1601987784937" duration="1487000" />
     </task>
     <task id="LOCAL-00001" summary="Add:&#10;BiLSTM+CRF">
       <created>1601814554363</created>
@@ -127,6 +140,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="Update README" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/nlp_models$run_bilstm_crf.coverage" NAME="run_bilstm_crf Coverage Results" MODIFIED="1601951484486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/nlp_models$run_bilstm_crf.coverage" NAME="run_bilstm_crf Coverage Results" MODIFIED="1601989112889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
