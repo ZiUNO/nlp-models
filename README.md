@@ -1,6 +1,8 @@
 # nlp-models
 ##### (For CUDA)
-
+- [x] BiLSTM+CRF
+- [ ] Transformer
+---
 ### BiLSTM+CRF
 ```python
 import torch
@@ -35,3 +37,5 @@ with torch.no_grad():
     prediction = model(X)[1]
 ```
 > https://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html#advanced-making-dynamic-decisions-and-the-bi-lstm-crf
+---
+### Transformer
