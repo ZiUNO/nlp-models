@@ -23,9 +23,10 @@ class BiLSTM_CRF(nn.Module):
     def forward(self, X, Y=None):
         """
 
-        :param X: torch.LongTensor([[1, 4, 3, 2, 6], [1, 4, 3, 0, 0]])
-        :param Y: torch.LongTensor([[2, 1, 5, 2, 3], [2, 1, 5, 0, 0]])
-        :return:
+        :param X: X.shape = [batch_size, seq_length]: batch_size * word_index_sequence
+        :param Y: Y.shape = [batch_size, seq_length]: batch_size * tag_sequence
+        :return: score.shape = [1]: sequence_score,
+                 tag_seq = [batch_size, seq_length]: batch_size * prediction_tag_sequence
         """
         lstm_feats = self.bilstm(X)  # the input of CRF
         score, tag_seq = self.crf(lstm_feats, Y)

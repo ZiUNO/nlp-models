@@ -25,8 +25,8 @@ class BiLSTM(nn.Module):
     def forward(self, X):
         """
 
-        :param X: torch.LongTensor([[1, 4, 3, 2, 6], [1, 4, 3, 0, 0]])
-        :return:
+        :param X: X.shape = [batch_size, seq_length]: batch_size * word_index_sequence
+        :return: lstm_feats.shape = [batch_size, seq_length, tagset_size]: batch_size * seq_length * word2tag_feature_distribution
         """
         self.seq_length = X.shape[1]
         self.batch_size = X.shape[0]

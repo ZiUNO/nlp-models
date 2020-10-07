@@ -1,9 +1,10 @@
 # nlp-models
 ##### (For CUDA)
 - [x] BiLSTM+CRF
-- [ ] Transformer
+- [ ] GAN
+- [ ] VAE
 ---
-### BiLSTM+CRF
+### <div id='BiLSTM_CRF'>BiLSTM+CRF</div>
 ```python
 import torch
 
@@ -38,4 +39,3 @@ with torch.no_grad():
 ```
 > https://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html#advanced-making-dynamic-decisions-and-the-bi-lstm-crf
 ---
-### Transformer

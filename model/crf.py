@@ -8,10 +8,14 @@
 import torch
 import torch.nn as nn
 
-from model import *
+import sys
 
 
 class CRF(nn.Module):
+    MAX_INT = sys.maxsize
+    # START_TAG = '<START>'
+    # STOP_TAG = '<STOP>'
+
     def __init__(self, tagset_size):
         super(CRF, self).__init__()
 
@@ -22,11 +26,11 @@ class CRF(nn.Module):
         # transitions[-1] : STOP_TAG
         self.transitions = nn.Parameter(torch.randn(tagset_size, tagset_size))
 
-        self.transitions.data[-2, :] = - MAX_INT
-        self.transitions.data[:, -1] = - MAX_INT
+        self.transitions.data[-2, :] = - CRF.MAX_INT
+        self.transitions.data[:, -1] = - CRF.MAX_INT
 
     def _forward_alg(self, feats):
-        init_alphas = torch.full((self.batch_size, self.tagset_size), -1. * MAX_INT).cuda()
+        init_alphas = torch.full((self.batch_size, self.tagset_size), -1. * CRF.MAX_INT).cuda()
         # init_alphas[0][index of START_TAG] = 0
         init_alphas[:, -2] = 0.
 
@@ -50,12 +54,13 @@ class CRF(nn.Module):
         tags = torch.cat([torch.ones((self.batch_size, 1), dtype=torch.long).cuda() * (self.tagset_size - 2), tags],
                          dim=1)
         for j in range(self.seq_length):
-            score = score + self.transitions[tags[:, j + 1], tags[:, j]].view(self.batch_size) + torch.diagonal(feats[:, j][:, tags[:, j + 1]])
+            score = score + self.transitions[tags[:, j + 1], tags[:, j]].view(self.batch_size) + torch.diagonal(
+                feats[:, j][:, tags[:, j + 1]])
         score = score + self.transitions[-1, tags[:, -1]]
         return score.sum()
 
     def _viterbi_decode(self, feats):
-        init_vvars = torch.full((self.batch_size, self.tagset_size), -1. * MAX_INT).cuda()
+        init_vvars = torch.full((self.batch_size, self.tagset_size), -1. * CRF.MAX_INT).cuda()
         init_vvars[:, -2] = 0.
 
         forward_var = init_vvars
@@ -94,6 +99,13 @@ class CRF(nn.Module):
         return torch.tensor(path_scores, dtype=torch.float).sum(), best_paths
 
     def forward(self, X, Y=None):
+        """
+
+        :param X: X.shape = [batch_size, seq_length, tagset_size]: batch_size * seq_length * tag_feature_distribution
+        :param Y: Y.shape = [batch_size, seq_length]: batch_size * tag_sequence
+        :return: score.shape = [1]: sequence_score,
+                 tag_seq = [batch_size, seq_length]: batch_size * prediction_tag_sequence
+        """
         self.seq_length = X.shape[1]
         self.batch_size = X.shape[0]
         # feats : the input of CRF
