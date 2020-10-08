@@ -5,7 +5,7 @@
 # @File    : bilstm_crf.py
 # @Software: PyCharm
 
-import torch.nn as nn
+from torch import nn
 
 from model.bilstm import BiLSTM
 from model.crf import CRF

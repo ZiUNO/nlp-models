@@ -1,5 +1,6 @@
 # nlp-models
 ##### (For CUDA)
+- [ ] AutoEncoder
 - [x] BiLSTM+CRF
 - [ ] GAN
 - [ ] VAE
