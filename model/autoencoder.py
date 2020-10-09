@@ -16,6 +16,14 @@ class AutoEncoder(nn.Module):
         self.fc = nn.Linear(hidden_dim, embedding_dim)
 
     def forward(self, enc_input, dec_input):
+        """
+
+        :param enc_input: enc_input.shape = [batch_size, seq_length, embedding_dim]
+        :param dec_input: dec_input.shape = [batch_size, seq_length + 1, embedding_dim]
+                          # dec_input[batch_index, 0] = <START>.embedding
+        :return: tgt_output.shape = [batch_size, seq_length + 1, embedding_dim]
+                 # tgt_output[batch_index, -1] = <STOP>.embedding
+        """
         _, hidden_state = self.enc_cell(enc_input)
         dec_output, _ = self.dec_cell(dec_input, hidden_state)
         tgt_output = self.fc(dec_output)
