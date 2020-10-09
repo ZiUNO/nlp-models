@@ -16,8 +16,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s[line:%(
 
 embedding_dim = 32
 hidden_dim = 20
-batch_size = 8
-seq_length = 5
+batch_size = 200
+seq_length = 20
 enc_input = torch.randn(batch_size, seq_length, embedding_dim).cuda()
 dec_input = torch.cat((torch.randn(1, 1, embedding_dim).expand(batch_size, 1, embedding_dim).cuda(),
                        enc_input), dim=1).cuda()
@@ -27,7 +27,7 @@ tgt_output = torch.cat((enc_input,
 model = AutoEncoder(embedding_dim=embedding_dim, hidden_dim=hidden_dim)
 model = model.cuda()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
-loss_function = nn.MSELoss()
+loss_function = nn.MSELoss().cuda()
 
 epochs = 100000
 for epoch in tqdm(range(epochs), desc='Training'):
