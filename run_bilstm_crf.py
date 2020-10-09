@@ -32,6 +32,7 @@ epochs = 500
 for epoch in tqdm(range(epochs), desc='Training'):
     model.zero_grad()
     loss, _ = model(X, Y)
+    optimizer.zero_grad()
     loss.backward()
     optimizer.step()
 
