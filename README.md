@@ -1,7 +1,7 @@
 # nlp-models
 ##### (For CUDA)
-- [ ] <a href="#user-content-autoencoder">AutoEncoder</a>
-- [x] BiLSTM+CRF
+- [x] <a href="#autoencoder">AutoEncoder</a>
+- [x] <a href="#bilstmcrf">BiLSTM+CRF</a>
 - [ ] GAN
 - [ ] VAE
 ---
@@ -66,6 +66,7 @@ epochs = 500
 for _ in range(epochs):
     model.zero_grad()
     loss, _ = model(X, Y)
+    optimizer.zero_grad()
     loss.backward()
     optimizer.step()
 

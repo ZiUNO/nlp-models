@@ -41,7 +41,8 @@ for epoch in tqdm(range(epochs), desc='Training'):
     if not epoch % 20000:
         logging.info("loss: %s" % str(loss.data))
 
-prediction = model(enc_input, dec_input)
+with torch.no_grad():
+    prediction = model(enc_input, dec_input)
 # logging.info("Prediction: %s" % str(prediction.tolist()))
 # logging.info("GroundTruth: %s" % str(tgt_output.tolist()))
 logging.info("Loss: %s" % str(loss_function(prediction, tgt_output).data))
