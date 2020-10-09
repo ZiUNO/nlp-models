@@ -11,6 +11,12 @@ embedding_dim = 300  # depend on the autoencoder embedding_dim
 START_EMBEDDING = torch.randn((1, embedding_dim))
 STOP_EMBEDDING = torch.randn((1, embedding_dim))
 
+# 通过使用embed嵌入、pump抽取将词嵌入到空间中和空间分布中还原成词
+
+class Embed(nn.Module):
+    pass
+class Pump(nn.Module):
+    pass
 
 # TODO append a crf after decoder's lstm : maybe cannot calculate the grad !
 class Generator(nn.Module):
