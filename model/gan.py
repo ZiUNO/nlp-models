@@ -4,33 +4,75 @@
 # @Email   : ziunocao@126.com
 # @File    : gan.py
 # @Software: PyCharm
-import torch
 from torch import nn
 
-embedding_dim = 300  # depend on the autoencoder embedding_dim
-START_EMBEDDING = torch.randn((1, embedding_dim))
-STOP_EMBEDDING = torch.randn((1, embedding_dim))
+from model.autoencoder import AutoEncoder
+from model.crf import CRF
 
-# 通过使用embed嵌入、pump抽取将词嵌入到空间中和空间分布中还原成词
-
-class Embed(nn.Module):
-    pass
-class Pump(nn.Module):
-    pass
 
 # TODO append a crf after decoder's lstm : maybe cannot calculate the grad !
-class Generator(nn.Module):
-    def __init__(self, embedding_dim, hidden_dim):
-        super(Generator, self).__init__()
+from model.embed import Embed
+from model.pump import Pump
 
-    def forward(self, start_emb):
-        sentence = start_emb
-        return sentence
+
+class Generator(nn.Module):
+    def __init__(self, embedding_dim, hidden_dim, seq_length):
+        super(Generator, self).__init__()
+        self.seq_length = seq_length
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, batch_first=True)
+
+    def forward(self, start_emb, noise_state):
+        sentence_state = noise_state
+        for _ in range(self.seq_length):
+            _, sentence_state = self.lstm(start_emb, sentence_state)
+        return sentence_state
 
 
 class Discriminator(nn.Module):
-    def __init__(self):
+    def __init__(self, embedding_dim, hidden_dim, seq_length):
         super(Discriminator, self).__init__()
+        self.seq_length = seq_length
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, 2)
+        self.cls = nn.Softmax(2)
 
-    def forward(self):
-        pass
+    def forward(self, start_emb, sentence_state):
+        output = start_emb
+        for _ in range(self.seq_length):
+            output, _ = self.lstm(output, sentence_state)
+        dis_output = self.fc(output)
+        cls = self.cls(dis_output)
+        return cls
+
+
+class GAN:
+    def __init__(self, embedding_dim, hidden_dim, seq_length):
+        super(GAN, self).__init__()
+        self.emb = Embed.from_pretrained('emb')
+        self.pum = Pump.from_pretrained('pump')
+        self.gen = Generator(embedding_dim, hidden_dim, seq_length)
+        self.dis = Discriminator(embedding_dim, hidden_dim, seq_length)
+        self.ae = AutoEncoder.from_pretrained('ae')
+        self.crf = CRF.from_pretrained('crf')
+
+    @property
+    def embedding(self):
+        return self.emb
+
+    @property
+    def pumping(self):
+        return self.pum
+
+    @property
+    def generator(self):
+        return self.gen
+
+    @property
+    def discriminator(self):
+        return self.dis
+
+    def encode(self, enc_input):
+        return self.ae.encode(enc_input)
+
+    def decode(self, dec_input):
+        return self.ae.decode(dec_input)

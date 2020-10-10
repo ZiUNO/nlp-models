@@ -10,8 +10,10 @@ from torch import nn
 
 import sys
 
+from model import Model
 
-class CRF(nn.Module):
+
+class CRF(nn.Module, Model):
     MAX_INT = sys.maxsize
     # START_TAG = '<START>'
     # STOP_TAG = '<STOP>'

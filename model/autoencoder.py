@@ -7,8 +7,10 @@
 import torch
 from torch import nn
 
+from model import Model
 
-class AutoEncoder(nn.Module):
+
+class AutoEncoder(nn.Module, Model):
     def __init__(self, embedding_dim, hidden_dim):
         super(AutoEncoder, self).__init__()
         self.enc_cell = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_dim, batch_first=True)
