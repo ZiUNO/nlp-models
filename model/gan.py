@@ -46,14 +46,14 @@ class Discriminator(nn.Module):
 
 
 class GAN:
-    def __init__(self, embedding_dim, hidden_dim, seq_length):
+    def __init__(self, embedding_dim, hidden_dim, seq_length, pretrained):
         super(GAN, self).__init__()
-        self.emb = Embed.from_pretrained('emb')
-        self.pum = Pump.from_pretrained('pump')
+        self.emb = Embed.from_pretrained(pretrained['Embed'])
+        self.pum = Pump.from_pretrained(pretrained['Pump'])
         self.gen = Generator(embedding_dim, hidden_dim, seq_length)
         self.dis = Discriminator(embedding_dim, hidden_dim, seq_length)
-        self.ae = AutoEncoder.from_pretrained('ae')
-        self.crf = CRF.from_pretrained('crf')
+        self.ae = AutoEncoder.from_pretrained(pretrained['AutoEncoder'])
+        self.crf = CRF.from_pretrained(pretrained['CRF'])
 
     @property
     def embedding(self):
