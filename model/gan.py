@@ -9,7 +9,6 @@ from torch import nn
 from model.autoencoder import AutoEncoder
 from model.crf import CRF
 
-
 from model.embed import Embed
 from model.pump import Pump
 
@@ -19,11 +18,14 @@ class Generator(nn.Module):
         super(Generator, self).__init__()
         self.seq_length = seq_length
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, embedding_dim)
 
     def forward(self, start_emb, noise_state):
         sentence_state = noise_state
+        word_emb = start_emb
         for _ in range(self.seq_length):
-            _, sentence_state = self.lstm(start_emb, sentence_state)
+            word_emb, sentence_state = self.lstm(word_emb, sentence_state)
+            word_emb = self.fc(word_emb)
         return sentence_state
 
 
@@ -32,14 +34,17 @@ class Discriminator(nn.Module):
         super(Discriminator, self).__init__()
         self.seq_length = seq_length
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, batch_first=True)
-        self.fc = nn.Linear(hidden_dim, 2)
+        self.fc = nn.Linear(hidden_dim, embedding_dim)
+        self.final_fc = nn.Linear(hidden_dim, 2)
         self.cls = nn.Softmax(2)
 
     def forward(self, start_emb, sentence_state):
         output = start_emb
+        lstm_feats = None
         for _ in range(self.seq_length):
-            output, _ = self.lstm(output, sentence_state)
-        dis_output = self.fc(output)
+            lstm_feats, _ = self.lstm(output, sentence_state)
+            output = self.fc(lstm_feats)
+        dis_output = self.final_fc(lstm_feats)
         cls = self.cls(dis_output)
         return cls
 

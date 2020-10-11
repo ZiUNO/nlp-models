@@ -40,8 +40,9 @@ class AutoEncoder(nn.Module, Model):
 
     def decode(self, sentence_vec, start_emb):
         output = []
+        out = start_emb
         for _ in range(self.dec_seq_length):
-            dec_out, sentence_vec = self.dec_cell(start_emb, sentence_vec)
+            dec_out, sentence_vec = self.dec_cell(out, sentence_vec)
             out = self.fc(dec_out)
             output.append(out)
         return torch.tensor(output, dtype=torch.float)
