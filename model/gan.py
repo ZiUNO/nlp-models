@@ -10,7 +10,6 @@ from model.autoencoder import AutoEncoder
 from model.crf import CRF
 
 
-# TODO append a crf after decoder's lstm : maybe cannot calculate the grad !
 from model.embed import Embed
 from model.pump import Pump
 

@@ -4,6 +4,7 @@
 # @Email   : ziunocao@126.com
 # @File    : run_gan.py
 # @Software: PyCharm
+import os
 
 import torch
 
@@ -25,10 +26,10 @@ real_data = torch.randint(vocab_size - 2, (batch_size, seq_length))
 real_labels = torch.tensor([0, 1]).expand(batch_size, 2)
 
 gan = GAN(embedding_dim, hidden_dim, seq_length,
-          pretrained={'Embed': 'emb.pth',
-                      'Pump': 'pum.pth',
-                      'AutoEncoder': 'ae.pth',
-                      'CRF': 'crf.pth'})
+          pretrained={'Embed': os.path.join('model', 'pretrained', 'emb.pth'),
+                      'Pump': os.path.join('model', 'pretrained', 'pum.pth'),
+                      'AutoEncoder': os.path.join('model', 'pretrained', 'ae.pth'),
+                      'CRF': os.path.join('model', 'pretrained', 'crf.pth')})
 
 # Optimizers
 optimizer_gen = torch.optim.Adam(gan.generator.parameters(), lr=0.01, weight_decay=1e-4)
