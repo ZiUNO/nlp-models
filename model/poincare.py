@@ -29,7 +29,7 @@ boundary = 1 - eps
 class PoincareDistance(Function):
     @staticmethod
     def norm_square(x):
-        return torch.clamp(torch.norm(x, p=2, dim=-1), min=0, max=boundary) ** 2
+        return torch.clamp(torch.norm(x, p=2, dim=-1) ** 2, min=eps, max=boundary)
 
     @staticmethod
     def forward(ctx, x, y):
@@ -39,8 +39,9 @@ class PoincareDistance(Function):
 
         # arcosh
         arc_grad = torch.sqrt(alpha ** 2 - 1)
+        arc_result = torch.log(alpha + arc_grad)
         ctx.save_for_backward(x, y, arc_grad)
-        return torch.log(alpha + arc_grad)
+        return arc_result
 
     @staticmethod
     def backward(ctx, grad_outputs):
