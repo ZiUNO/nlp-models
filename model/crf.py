@@ -5,15 +5,10 @@
 # @File    : crf.py
 # @Software: PyCharm
 
-import torch
-from torch import nn
-
-import sys
-
-from model import Model
+from model import *
 
 
-class CRF(nn.Module, Model):
+class CRF(Module):
     MAX_INT = sys.maxsize
     # START_TAG = '<START>'
     # STOP_TAG = '<STOP>'
@@ -26,7 +21,7 @@ class CRF(nn.Module, Model):
 
         # transitions[-2] : START_TAG
         # transitions[-1] : STOP_TAG
-        self.transitions = nn.Parameter(torch.randn(tagset_size, tagset_size))
+        self.transitions = Parameter(torch.randn(tagset_size, tagset_size))
 
         self.transitions.data[-2, :] = - CRF.MAX_INT
         self.transitions.data[:, -1] = - CRF.MAX_INT

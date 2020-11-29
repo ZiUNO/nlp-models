@@ -5,13 +5,10 @@
 # @File    : bilstm_crf.py
 # @Software: PyCharm
 
-from torch import nn
-
-from model.bilstm import BiLSTM
-from model.crf import CRF
+from model import *
 
 
-class BiLSTM_CRF(nn.Module):
+class BiLSTM_CRF(Module):
     def __init__(self, vocab_size, tagset_size, embedding_dim, hidden_dim):
         super(BiLSTM_CRF, self).__init__()
 

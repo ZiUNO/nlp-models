@@ -5,11 +5,10 @@
 # @File    : bilstm.py
 # @Software: PyCharm
 
-import torch
-from torch import nn
+from model import *
 
 
-class BiLSTM(nn.Module):
+class BiLSTM(Module):
     def __init__(self, vocab_size, tagset_size, embedding_dim, hidden_dim):
         super(BiLSTM, self).__init__()
 
@@ -17,10 +16,10 @@ class BiLSTM(nn.Module):
 
         self.hidden_dim = hidden_dim
 
-        self.word_emb = nn.Embedding(vocab_size, embedding_dim)
-        self.bilstm = nn.LSTM(embedding_dim, hidden_dim // 2,
-                              num_layers=1, bidirectional=True)
-        self.fc = nn.Linear(hidden_dim // 2 * 2, tagset_size)
+        self.word_emb = Embedding(vocab_size, embedding_dim)
+        self.bilstm = LSTM(embedding_dim, hidden_dim // 2,
+                           num_layers=1, bidirectional=True)
+        self.fc = Linear(hidden_dim // 2 * 2, tagset_size)
 
     def forward(self, X):
         """
