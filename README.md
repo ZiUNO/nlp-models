@@ -1,92 +1,48 @@
 # nlp-models
 ##### (For CUDA)
 ## Models
-- [x] <a href="#autoencoder">AutoEncoder</a>
+- [x] <a href="#autoencoder">Seq2Seq</a>
 - [x] <a href="#bilstmcrf">BiLSTM+CRF</a>
-- [ ] GAN
-- [ ] VAE
 ## Methods
-### Optuna
-```python
-import optuna
-import torch
-
-from torch import nn
-from model.autoencoder import AutoEncoder
-
-batch_size = 200
-seq_length = 20
-
-
-def objective(trial):
-    embedding_dim = trial.suggest_int('embedding_dim', 16, 32)
-    hidden_dim = trial.suggest_int('hidden_dim', 16, 32)
-    epochs = trial.suggest_int('epochs', 10, 1000)
-
-    enc_input = torch.randn(batch_size, seq_length, embedding_dim).cuda()
-    dec_input = torch.cat((torch.randn(1, 1, embedding_dim).expand(batch_size, 1, embedding_dim).cuda(),
-                           enc_input), dim=1).cuda()
-    tgt_output = torch.cat((enc_input,
-                            torch.randn(1, 1, embedding_dim).expand(batch_size, 1, embedding_dim).cuda()), dim=1).cuda()
-
-    model = AutoEncoder(embedding_dim=embedding_dim, hidden_dim=hidden_dim)
-    model = model.cuda()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
-    loss_function = nn.MSELoss().cuda()
-
-    for _ in range(epochs):
-        target = model(enc_input, dec_input)
-        loss = loss_function(target, tgt_output)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-    with torch.no_grad():
-        prediction = model(enc_input, dec_input)
-    loss_score = loss_function(prediction, tgt_output).data
-
-    return loss_score
-
-
-study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=100)
-
-trial = study.best_trial
-best_params = trial.params.items()
-```
----
-### AutoEncoder
+### Seq2Seq
 ```python
 from torch import nn
 
-from model.autoencoder import AutoEncoder
+from model import Seq2Seq
 import torch
 
+vocab_size = 20
 embedding_dim = 32
 hidden_dim = 20
-batch_size = 8
-seq_length = 5
-enc_input = torch.randn(batch_size, seq_length, embedding_dim).cuda()
-dec_input = torch.cat((torch.randn(1, 1, embedding_dim).expand(batch_size, 1, embedding_dim).cuda(),
-                       enc_input), dim=1).cuda()
+batch_size = 10
+seq_length = 20
+beam_size = 2
+# 1 = [START], 2 = [STOP]
+enc_input = torch.randint(3, vocab_size, (batch_size, seq_length)).cuda()
+dec_input = torch.cat((torch.ones(batch_size, 1).cuda() * 1,
+                       enc_input), dim=-1).cuda()
 tgt_output = torch.cat((enc_input,
-                        torch.randn(1, 1, embedding_dim).expand(batch_size, 1, embedding_dim).cuda()), dim=1).cuda()
+                        torch.ones(batch_size, 1).cuda() * 2), dim=-1).cuda()
 
-model = AutoEncoder(embedding_dim=embedding_dim, hidden_dim=hidden_dim)
+enc_input = enc_input.detach().type(torch.long)
+dec_input = dec_input.detach().type(torch.long)
+tgt_output = tgt_output.detach().type(torch.long)
+
+model = Seq2Seq(vocab_size=vocab_size, embedding_dim=embedding_dim, hidden_dim=hidden_dim, beam_size=beam_size)
 model = model.cuda()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=1e-4)
-loss_function = nn.MSELoss()
+loss_function = nn.CrossEntropyLoss().cuda()
 
-epochs = 100000
-for _ in range(epochs):
-
+epochs = 1000
+for epoch in range(epochs):
     target = model(enc_input, dec_input)
-    loss = loss_function(target, tgt_output)
-
+    loss = 0
+    for index in range(len(target)):
+        loss += loss_function(target[index], tgt_output[index])
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+
 with torch.no_grad():
     prediction = model(enc_input, dec_input)
 ```
@@ -95,7 +51,7 @@ with torch.no_grad():
 ```python
 import torch
 
-from model.bilstm_crf import BiLSTM_CRF
+from model import BiLSTM_CRF
 
 vocab_size = 7
 tagset_size = 6
