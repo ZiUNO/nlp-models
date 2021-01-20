@@ -3,6 +3,7 @@
 ## Models
 - [x] <a href="#autoencoder">Seq2Seq</a>
 - [x] <a href="#bilstmcrf">BiLSTM+CRF</a>
+- [ ] <a href="#glove">GloVe</a>
 ## Methods
 ### Seq2Seq
 ```python
@@ -10,6 +11,7 @@ from torch import nn
 
 from model import Seq2Seq
 import torch
+
 
 vocab_size = 20
 embedding_dim = 32
@@ -53,6 +55,7 @@ import torch
 
 from model import BiLSTM_CRF
 
+
 vocab_size = 7
 tagset_size = 6
 embedding_dim = 5
@@ -83,3 +86,4 @@ with torch.no_grad():
 ```
 > https://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html#advanced-making-dynamic-decisions-and-the-bi-lstm-crf
 ---
+### GloVe
