@@ -34,13 +34,13 @@ class GloVe(Module):
     def x(self, i, j):
         return self.matrix[i - 1][j - 1]
 
-    def weight_function(self, i, j):
+    def weight_function_x(self, i, j):
         return self.x(i, j) / self.x_max
 
     def distance(self, i, j):
         return torch.dot(self.w(i), self.w_(j))
 
-    def log(self, i, j):
+    def function_x(self, i, j):
         return torch.log(self.x(i, j))
 
     def forward(self):
@@ -51,6 +51,6 @@ class GloVe(Module):
                 j = tensor(j, dtype=torch.long)
                 if self.x(i, j).tolist() == 0:
                     continue
-                J += self.weight_function(i, j) * torch.pow(
-                    self.distance(i, j) + self.b(i)[0] + self.b_(j)[0] - self.log(i, j), 2)
+                J += self.weight_function_x(i, j) * torch.pow(
+                    self.distance(i, j) + self.b(i)[0] + self.b_(j)[0] - self.function_x(i, j), 2)
         return J
