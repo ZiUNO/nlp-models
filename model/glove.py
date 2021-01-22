@@ -35,15 +35,37 @@ class GloVe(Module):
         return self.matrix[i - 1][j - 1]
 
     def weight_function_x(self, i, j):
+        """
+        f(Xij)
+        @param i:
+        @param j:
+        @return: f(Xij)
+        """
         return self.x(i, j) / self.x_max
 
     def distance(self, i, j):
+        """
+        wi^T times w_j
+        @param i:
+        @param j:
+        @return: the inner product of wi and w_j
+        """
         return torch.dot(self.w(i), self.w_(j))
 
     def function_x(self, i, j):
+        """
+        log(Xij)
+        @param i:
+        @param j:
+        @return: log(Xij)
+        """
         return torch.log(self.x(i, j))
 
     def forward(self):
+        """
+        Calculate GloVe loss J
+        @return: J
+        """
         J = 0
         for i in range(1, self.vocab_size + 1):
             i = tensor(i, dtype=torch.long)
