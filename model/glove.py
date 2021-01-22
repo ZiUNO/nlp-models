@@ -24,7 +24,11 @@ class GloVe(Module):
         for sentence in raw_data:
             for pos in range(0, len(sentence)):
                 first = sentence[pos]
-                for i, second in enumerate(sentence[pos + 1: pos + self.window_size]):
+                for i, second in enumerate(sentence[max(0, pos - self.window_size): pos]):
+                    self.matrix[first - 1][second - 1] += 1 / (pos - max(pos - self.window_size, 0) - i)
+                    if first != second:
+                        self.matrix[second - 1][first - 1] += 1 / (pos - max(pos - self.window_size, 0) - i)
+                for i, second in enumerate(sentence[pos + 1: pos + self.window_size + 1]):
                     self.matrix[first - 1][second - 1] += 1 / (1 + i)
                     if first != second:
                         self.matrix[second - 1][first - 1] += 1 / (1 + i)
@@ -41,7 +45,7 @@ class GloVe(Module):
         @param j:
         @return: f(Xij)
         """
-        return self.x(i, j) / self.x_max
+        return torch.pow(self.x(i, j) / self.x_max, 0.75)
 
     def distance(self, i, j):
         """
