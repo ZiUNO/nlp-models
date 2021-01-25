@@ -71,10 +71,10 @@ class GloVe(Module):
         @return: J
         """
         J = 0
-        for i in range(1, self.vocab_size + 1):
-            i = tensor(i, dtype=torch.long)
-            for j in range(1, self.vocab_size + 1):
-                j = tensor(j, dtype=torch.long)
+        for i in range(self.vocab_size):
+            i = tensor(i + 1, dtype=torch.long)
+            for j in range(self.vocab_size):
+                j = tensor(j + 1, dtype=torch.long)
                 if self.x(i, j).tolist() == 0:
                     continue
                 J += self.weight_function_x(i, j) * torch.pow(
