@@ -5,7 +5,6 @@
 # @File    : run_glove.py
 # @Software: PyCharm
 import logging
-from random import randint
 
 import torch
 from tqdm import tqdm
