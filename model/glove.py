@@ -22,7 +22,7 @@ class GloVe(Module):
 
     def co_occurrence_matrix(self, raw_data: list):
         for sentence in raw_data:
-            for pos in range(0, len(sentence)):
+            for pos in range(len(sentence)):
                 first = sentence[pos]
                 for i, second in enumerate(sentence[max(0, pos - self.window_size): pos]):
                     self.matrix[first - 1][second - 1] += 1 / (pos - max(pos - self.window_size, 0) - i)
