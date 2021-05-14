@@ -6,7 +6,7 @@
 # @Software: PyCharm
 from torch import nn
 
-from model import Seq2Seq
+from pytorch_module.model import Seq2Seq
 from tqdm import tqdm
 
 import logging

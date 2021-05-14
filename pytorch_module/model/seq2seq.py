@@ -4,7 +4,7 @@
 # @Email   : ziunocao@126.com
 # @File    : seq2seq.py
 # @Software: PyCharm
-from model import *
+from pytorch_module.model import *
 
 
 class Seq2Seq(Module):

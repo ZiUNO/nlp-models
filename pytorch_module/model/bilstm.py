@@ -5,7 +5,7 @@
 # @File    : bilstm.py
 # @Software: PyCharm
 
-from model import *
+from pytorch_module.model import *
 
 
 class BiLSTM(Module):

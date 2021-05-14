@@ -5,7 +5,7 @@
 # @File    : bilstm_crf.py
 # @Software: PyCharm
 
-from model import *
+from pytorch_module.model import *
 
 
 class BiLSTM_CRF(Module):

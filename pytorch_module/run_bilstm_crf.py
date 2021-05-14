@@ -9,7 +9,7 @@ import torch
 from tqdm import tqdm
 
 import logging
-from model import BiLSTM_CRF
+from pytorch_module.model import BiLSTM_CRF
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S')
 

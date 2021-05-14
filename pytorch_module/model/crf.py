@@ -5,7 +5,7 @@
 # @File    : crf.py
 # @Software: PyCharm
 
-from model import *
+from pytorch_module.model import *
 
 
 class CRF(Module):
