@@ -9,7 +9,7 @@ import logging
 import torch
 from tqdm import tqdm
 
-from model import GloVe
+from pytorch_module.model import GloVe
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S')
