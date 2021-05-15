@@ -27,7 +27,7 @@
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
-          "type": "embedding",
+          "type": "glove_embedding",
           "trainable": false,
           "embedding_dim": 300,
           "pretrained_file": "data/glove/glove.6B.300d.txt"
