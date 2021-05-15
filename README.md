@@ -1,19 +1,18 @@
 # nlp-models
 ##### (for CUDA)
 ## Dir (for test)
-.
-|-- allennlp_model: Model for AllenNLP
-|-- pytorch_module
-|-- data
-    |-- glove
-        |-- glove.6B.300d.txt
-        |-- glove.840B.300d.txt
-    |-- squad
-        |-- train-v2.0.json
-        |-- train-v2.0-test.json: Abridged version of train-v2.0.json
-        |-- dev-v2.0.json
-        |-- dev-v2.0-test.json: Abridged version of dev-v2.0.json
-    |-- text8
+- allennlp_model: Model for AllenNLP
+- pytorch_module
+- data
+    - glove
+        - glove.6B.300d.txt
+        - glove.840B.300d.txt
+    - squad
+        - train-v2.0.json
+        - train-v2.0-test.json: Abridged version of train-v2.0.json
+        - dev-v2.0.json
+        - dev-v2.0-test.json: Abridged version of dev-v2.0.json
+    - text8
 ---
 ### Module: pytorch_module
 - [x] BiLSTM+CRF
